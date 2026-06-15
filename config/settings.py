@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'orgen',
-    'orgen.apps.OrgenConfig',
+    # 'orgen.apps.OrgenConfig',
 ]
 
 MIDDLEWARE = [
