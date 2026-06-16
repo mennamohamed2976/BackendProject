@@ -164,19 +164,13 @@ class UnifiedLoginSerializer(serializers.Serializer):
 # mini serializer for search results
 class UserMiniSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
-    vital_signs = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'role', 'national_id', 'blood_type', 'gender', 'medical_record_number', 'status','vital_signs',]
+        fields = ['id', 'full_name', 'role', 'national_id', 'blood_type', 'gender', 'medical_record_number', 'status']
 
     def get_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}"
-
-    def get_vital_signs(self, obj):
-        from .serializers import VitalSignsSerializer
-        qs = VitalSigns.objects.filter(user=obj)
-        return VitalSignsSerializer(qs, many=True).data
 
 
 # الحساسيه
@@ -823,7 +817,7 @@ class HospitalFullSerializer(serializers.ModelSerializer):
         data = []
 
         for patient in patients_qs:
-            patient_data = UserMiniSerializer(patient).data
+            patient_data = UserSerializer(patient).data
             patient_surgeries = [s for s in surgeries_qs if s.organ_matching.patient_id == patient.id]
             patient_data['surgeries'] = SurgerySerializer(patient_surgeries, many=True).data
             patient_matches = [m for m in matches_qs if m.patient_id == patient.id]
@@ -848,7 +842,7 @@ class HospitalFullSerializer(serializers.ModelSerializer):
         data = []
 
         for donor in donors_qs:
-            donor_data = UserMiniSerializer(donor).data
+            donor_data = UserSerializer(donor).data
             donor_matches = [m for m in matches_qs if m.donor_id == donor.id]
             donor_data['matches'] = OrganMatchingSerializer(donor_matches, many=True).data
             donor_alerts = alerts_map.get(donor.id, [])
