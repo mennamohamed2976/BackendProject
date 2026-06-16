@@ -186,7 +186,7 @@ class DonorMedicalProfileViewSet(viewsets.ModelViewSet):
 
 
 class HospitalViewSet(viewsets.ModelViewSet):
-    queryset = Hospital.objects.all()
+    queryset = Hospital.objects.all().order_by("id")
     serializer_class = HospitalFullSerializer
 
 
