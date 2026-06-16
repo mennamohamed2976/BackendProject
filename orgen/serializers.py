@@ -164,13 +164,19 @@ class UnifiedLoginSerializer(serializers.Serializer):
 # mini serializer for search results
 class UserMiniSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
+    vital_signs = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'role', 'national_id', 'blood_type', 'gender', 'medical_record_number', 'status']
+        fields = ['id', 'full_name', 'role', 'national_id', 'blood_type', 'gender', 'medical_record_number', 'status','vital_signs',]
 
     def get_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}"
+
+    def get_vital_signs(self, obj):
+        from .serializers import VitalSignsSerializer
+        qs = VitalSigns.objects.filter(user=obj)
+        return VitalSignsSerializer(qs, many=True).data
 
 
 # الحساسيه
